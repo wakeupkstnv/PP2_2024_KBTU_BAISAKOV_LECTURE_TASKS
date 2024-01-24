@@ -12,6 +12,9 @@ def guess_the_number():
     while user_answer != random_number:
         user_answer = int(input('Take a guess.\n'))
         guesses_count += 1
-        print('Your guess is too low.\n') if user_answer != random_number else print(f'Good job, {name}! You guessed my number in {guesses_count} guesses!\n')
+
+        if user_answer < random_number: print('Your guess is too low.')
+        if user_answer > random_number: print('Your guess is too high')
+        if user_answer == random_number: print(f'Good job, {name}! You guessed my number in {guesses_count} guesses!\n')
 
 guess_the_number()
