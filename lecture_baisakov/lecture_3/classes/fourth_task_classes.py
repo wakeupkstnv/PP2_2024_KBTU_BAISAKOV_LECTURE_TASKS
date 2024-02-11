@@ -15,9 +15,9 @@ class Point:
         like move(None, 2, None)
         
         '''
-        if xn != None: self.x = xn
-        if yn != None: self.y = yn
-        if zn != None: self.z = zn
+        if xn != None: self.x += xn
+        if yn != None: self.y += yn
+        if zn != None: self.z += zn
         
     def dist(self, point):
         if type(point) != Point: return None

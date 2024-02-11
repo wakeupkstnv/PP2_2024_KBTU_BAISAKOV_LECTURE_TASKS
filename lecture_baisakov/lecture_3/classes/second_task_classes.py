@@ -3,7 +3,7 @@ class Shape:
     
     def findArea(self, *args):
         s = 1
-
+        
         for _ in args:
             s *= _
         self.area = s
