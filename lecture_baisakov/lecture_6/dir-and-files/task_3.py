@@ -7,4 +7,3 @@ if os.access(path, mode=os.EX_OK):
         print(files)
     
     # or print(os.listdir(path))
-
