@@ -1,2 +1,5 @@
 Yandex: Black List
 Google: Black List
+Facebook: 2024.03.10
+2GIS: Black List
+Ubisoft: not correct data from user

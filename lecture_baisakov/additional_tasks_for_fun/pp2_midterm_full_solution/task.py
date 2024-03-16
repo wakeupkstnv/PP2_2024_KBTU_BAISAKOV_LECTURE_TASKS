@@ -14,7 +14,6 @@ def isBlackList(date: str) -> str:
     upd_data_from_user = datetime.datetime(year=int(collect_data_from_user[0].strip()), month=int(collect_data_from_user[1].strip()), day=int(collect_data_from_user[2].strip()))
     
     delta_in_time = upd_data_from_user - date_now
-    need_time = datetime.datetime(year=date_now.year, month=date_now.month, day=date_now.day + 3)
     
     if delta_in_time.days <= 3 and delta_in_time.days >= 0: return date
     if delta_in_time.days > 3 or delta_in_time.days < 0: return 'Black List' 
