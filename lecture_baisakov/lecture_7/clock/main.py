@@ -30,8 +30,8 @@ while not done:
         bg = pygame.image.load(os.path.normpath('img/meme.jpeg'))
         bg = pygame.transform.scale(bg, (829, 836))
     
-    angle_second = -(time.second * 6)
-    angle_minute = -(time.minute * 6)
+    angle_second = -(time.second * 6.5)
+    angle_minute = -(time.minute * 6.5)
                 
     game_display.blit(bg, (0, 0))
     

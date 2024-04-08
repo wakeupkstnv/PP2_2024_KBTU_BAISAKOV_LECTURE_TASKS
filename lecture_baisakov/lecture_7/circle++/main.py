@@ -15,25 +15,25 @@ while not done:
                 done = True
     
     pressed = pygame.key.get_pressed()
-    if pressed[pygame.K_UP] and y >= 27: y -= 20
-    if pressed[pygame.K_DOWN] and y <= 765.5: y += 20
-    if pressed[pygame.K_LEFT] and x >= 27: x -= 20
-    if pressed[pygame.K_RIGHT] and x <= 765.5: x += 20      
+    if pressed[pygame.K_UP] and y >= 20: y -= 20
+    if pressed[pygame.K_DOWN] and y <= 775: y += 20
+    if pressed[pygame.K_LEFT] and x >= 20: x -= 20
+    if pressed[pygame.K_RIGHT] and x <= 775: x += 20      
     
-    if y <= 765.6:
+    if y <= 775:
         y += 10
-        if y > 765.5: y = 765.5
+        if y > 775: y = 775
     
     screen.fill((255, 255, 255))
     
-    if y < 765.5 and not pressed[pygame.K_UP]:
+    if y < 775 and not pressed[pygame.K_UP]:
         delta -= 0.5
         if delta < -10: delta = -10
         if delta > 0: delta = 0
         pygame.draw.circle(screen, (200, 200, 200), (x, y + delta * 3), 25)
         pygame.draw.circle(screen, (100, 100, 100), (x, y + delta * 2), 25)
         pygame.draw.circle(screen, (0, 0, 0), (x, y + delta), 25)
-    if pressed[pygame.K_UP] and y <= 765.5:
+    if pressed[pygame.K_UP] and y <= 775:
         delta += 0.5
         if delta > 10: delta = 10
         if delta < 0: delta = 0
