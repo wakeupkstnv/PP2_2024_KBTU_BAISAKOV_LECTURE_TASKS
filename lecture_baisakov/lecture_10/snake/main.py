@@ -1,13 +1,26 @@
 import pygame              
 import random              
+import psycopg2
+from insert_name import insert_data
+from create import create_tables
+from update import update
 
+create_tables()
+
+name = ""
+
+while not name:
+    name = input("Введите ник: ")
+    insert_data(name)
+
+    
 pygame.init() 
 
 SW, SH = 600, 600 # screen size(playing area)
 WW, WH = 600, 700 # window size
 
 BLOCK_SIZE = 40
-FONT = pygame.font.SysFont('Comic Sans MS', BLOCK_SIZE)    
+FONT = pygame.font.SysFont("arialполужирный", BLOCK_SIZE)    
 
 screen = pygame.display.set_mode((WW, WH))
 pygame.display.set_caption("snake")
@@ -156,7 +169,24 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE: # exit the game
+                done = True
+            elif event.key == pygame.K_SPACE: # restart the game
+                snake.restart = True
+                score = speed = eaten_fruits = 0
+            if event.key == pygame.K_DOWN: 
+                snake.ydir = 1
+                snake.xdir = 0
+            elif event.key == pygame.K_UP:
+                snake.ydir = -1
+                snake.xdir = 0
+            elif event.key == pygame.K_RIGHT:
+                snake.ydir = 0
+                snake.xdir = 1
+            elif event.key == pygame.K_LEFT:
+                snake.ydir = 0
+                snake.xdir = -1
 
     snake.update()
 
@@ -166,12 +196,65 @@ while not done:
 
     wall.update(snake.body, (apple.x, apple.y), snake.head, eaten_fruits)
 
+    apple.update(snake.body)
+
+    golden_apple.update(snake.body, (apple.x, apple.y), [barrier for barrier in wall.barriers])
+
+    pygame.draw.rect(screen, (0, 255, 0), snake.head) # drawing the snake's head
     pygame.draw.rect(screen, (42, 42, 42), [0, SH, WW, WH]) # drawing the surface for showing some statistics
     # drawing the current values of score, speed, and level 
+    scoretxt = FONT.render(f"score: {score}", True, (138, 154, 91)) 
+    speedtxt = FONT.render(f"speed: {speed + 5}", True, (96, 130, 182))
+    leveltxt = FONT.render(f"level: {eaten_fruits//2}", True, (207, 159, 255))
+    # displaying the score, speed, and level on the screen
+    screen.blit(scoretxt, score_rect)
+    screen.blit(speedtxt, speed_rect)
+    screen.blit(leveltxt, level_rect)
 
+    # drawing the snake's body
+    for square in snake.body:
+        pygame.draw.rect(screen, (0, 65, 0), square)
 
+    # checking if a golden apple exist in screen and x,y of head == x,y of apple
+    if golden_apple.golden_apple_rect is not None and snake.head.colliderect(golden_apple.golden_apple_rect): # working like red apple, but score->3
+        snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE))
+        golden_apple = GoldenApple(snake.body, (apple.x, apple.y), [barrier for barrier in wall.barriers])
+        eaten_fruits += 1
+        score += 3
+        if (len(snake.body)-1) % 5 == 0: 
+            speed += 0.5
 
+    # checking if a x,y of head == x,y of apple
+    if snake.head.x == apple.x and snake.head.y == apple.y:
+        snake.body.append(pygame.Rect(square.x, square.y, BLOCK_SIZE, BLOCK_SIZE)) 
+        apple = Apple() # creating a new apple, after snake has eaten current apple 
+        eaten_fruits += 1
+        score += 1
+        if (len(snake.body)-1) % 5 == 0: # this means that speed is increasing after every fifth fruit eaten.
+            speed += 0.5
 
+    # checking that a new apple will not be created on an existing barrier
+    for barrier in wall.barriers:
+        if apple.x == barrier[0] and apple.y == barrier[1]: # else regenerate new position for apple
+            apple.spawn_apple()
+
+    # game over when the snake dies
+    if snake.dead and not snake.restart:
+        answer = ""
+        update(nickname=name, score=score)
+        screen.fill("black")
+        endtxt = FONT.render(f"your score: {score}", True, "red") 
+        end_rect = endtxt.get_rect(center=(SW/2, SH/2))
+        screen.blit(endtxt, end_rect)
+        while not answer:
+            answer = input(f"Ты набрал {score} очков? хочешь поменять на свой же рекорд? (y/n):   ")
+            if answer == "y":
+                update(nickname=name, score=score)
+            elif answer == "n":
+                break
+            else:
+                answer = ""
+        break
 
     pygame.display.update() # updating the screen
     clock.tick(5 + speed) # using fps to control game speed
